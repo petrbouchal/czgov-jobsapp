@@ -37,13 +37,14 @@ data2 <- data %>% group_by(Ministerstvo) %>% summarise(pozic=n()) %>% arrange(-p
 
 shinyServer(function(input, output) {
   output$counttext <- renderText(paste0(' Nalezeno ',jobcount,' nabídek od ',
-                                        deptcount,' úřadů. Naposledy zkontrolováno ', datum,'.'))
+                                        deptcount,' organizací. Naposledy zkontrolováno ', datum,'. Sledujeme 17 organizací.'))
   output$data <- renderDataTable(data,options = list(lengthChange=F,
                                                      language.search='Hledat',
                                                      pageLength=10,
                                                      dom="<<t>pi>",
                                                      searching=T,
-                                                     columns=list(list('width'='90%'),list('width'='10%'))))
-  output$googlechart <- renderGvis((gvisBarChart(data2,'Ministerstvo','pozic',
+                                                     columns=list(list('width'='90%', 'title'='Pozice'),
+                                                                  list('width'='10%', 'title'='Organizace'))))
+  output$googlechart <- renderGvis((gvisBarChart(data2,'Organizace','pozic',
                                                  options=gcoptions)))
 })
