@@ -8,13 +8,17 @@ library(googleVis)
 
 url_data <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4jPyicp%2B2mx&query=select%20%27%3Ca%20href%3D%27%27%27%20%7C%7C%20joburl%20%7C%7C%20%27%27%27%20target%3D%27%27_blank%27%27%3E%27%20%7C%7C%20jobtitle%20%7C%7C%20%27%3C%2Fa%3E%27%20as%20Pozice%2C%20dept%20as%20Ministerstvo%20from%20%27data%27%20where%20datetime%20%3D%20(select%20max(datetime)%20from%20data)%20order%20by%20Ministerstvo%20'
 url_date <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4jPyicp%2B2mx&query=select%20max(datetime)%20as%20date%20from%20data'
+url_allorgs <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4jPyicp%2B2mx&query=select%20count(distinct(dept))%20as%20alldeptcount%20from%20%27data%27'
 tmpFile <- tempfile()
 tmpFile <- getURL(url_data)
 #     download.file(url_data, destfile = tmpFile)
 data <- fromJSON(tmpFile)
 tmpFile2 <- tempfile()
 tmpFile2 <- getURL(url_date)
+tmpFile3 <- tempfile()
+tmpFile3 <- getURL(url_allorgs)
 date <- fromJSON(tmpFile2)
+alldeptcount <- fromJSON(tmpFile3)[1,1]
 datum <- strptime(date$date, '%Y-%m-%d')
 datum <- strftime(date$date, '%d.%m.%Y')
 deptcount <- length(unique(data$Ministerstvo))
@@ -37,7 +41,10 @@ data2 <- data %>% group_by(Ministerstvo) %>% summarise(pozic=n()) %>% arrange(-p
 
 shinyServer(function(input, output) {
   output$counttext <- renderText(paste0(' Nalezeno ',jobcount,' nabídek od ',
-                                        deptcount,' organizací. Naposledy zkontrolováno ', datum,'. Sledujeme 17 organizací.'))
+                                        deptcount,
+                                        ' organizací. Naposledy zkontrolováno ',
+                                        datum,'. Sledujeme ', alldeptcount,
+                                        ' organizací.'))
   output$data <- renderDataTable(data,options = list(lengthChange=F,
                                                      language.search='Hledat',
                                                      pageLength=10,
@@ -45,6 +52,6 @@ shinyServer(function(input, output) {
                                                      searching=T,
                                                      columns=list(list('width'='90%', 'title'='Pozice'),
                                                                   list('width'='10%', 'title'='Organizace'))))
-  output$googlechart <- renderGvis((gvisBarChart(data2,'Organizace','pozic',
+  output$googlechart <- renderGvis((gvisBarChart(data2,'Ministerstvo','pozic',
                                                  options=gcoptions)))
 })
