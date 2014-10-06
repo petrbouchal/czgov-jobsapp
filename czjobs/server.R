@@ -11,7 +11,6 @@ url_date <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4
 url_allorgs <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4jPyicp%2B2mx&query=select%20count(distinct(dept))%20as%20alldeptcount%20from%20%27data%27'
 tmpFile <- tempfile()
 tmpFile <- getURL(url_data)
-#     download.file(url_data, destfile = tmpFile)
 data <- fromJSON(tmpFile)
 tmpFile2 <- tempfile()
 tmpFile2 <- getURL(url_date)
@@ -46,7 +45,13 @@ shinyServer(function(input, output) {
                                         datum,'. Sledujeme ', alldeptcount,
                                         ' organizací.'))
   output$data <- renderDataTable(data,options = list(lengthChange=F,
-                                                     language.search='Hledat',
+                                                     language=list(
+                                                       "paginate"=list("next"="další",
+                                                                       "previous"="předchozí"),
+                                                       "infoEmpty"="Nic nenalezeno",
+                                                       "zeroRecords"="Hledání neodpovídá žádná pozice",
+                                                       "info"="Pozice _START_ až _END_ z _TOTAL_",
+                                                       "infoFiltered"=" (celkem _MAX_)"),
                                                      pageLength=10,
                                                      dom="<<t>pi>",
                                                      searching=T,
