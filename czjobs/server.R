@@ -23,6 +23,9 @@ datum <- strftime(date$date, '%d.%m.%Y')
 deptcount <- length(unique(data$Organizace))
 jobcount <- length(unique(data$Pozice))
 
+load('./names.dta')
+data <- merge(data,names,all.x=TRUE)
+
 gcoptions = list(width = '100%',
                  height = 320,
                  bar = '{groupWidth: \"85%\"}',
@@ -36,7 +39,8 @@ gcoptions = list(width = '100%',
                            fontFace: \'Source Sans Pro\'},
                            textPosition: \'out\'}')
 
-data2 <- data %>% group_by(Organizace) %>% summarise(pozic=n()) %>% arrange(-pozic)
+data2 <- data %>% group_by(zkratka) %>% summarise(pozic=n()) %>% arrange(-pozic)
+tabledata <- select(data, Pozice, Organizace=fullnazev)
 
 shinyServer(function(input, output) {
   output$counttext <- renderText(paste0(' Nalezeno ',jobcount,' nabídek od ',
@@ -44,7 +48,7 @@ shinyServer(function(input, output) {
                                         ' organizací. Naposledy zkontrolováno ',
                                         datum,'. Sledujeme ', alldeptcount,
                                         ' organizací.'))
-  output$data <- renderDataTable(data,options = list(lengthChange=F,
+  output$data <- renderDataTable(tabledata,options = list(lengthChange=F,
                                                      language=list(
                                                        "paginate"=list("next"="další",
                                                                        "previous"="předchozí"),
@@ -55,8 +59,8 @@ shinyServer(function(input, output) {
                                                      pageLength=10,
                                                      dom="<<t>pi>",
                                                      searching=T,
-                                                     columns=list(list('width'='90%', 'title'='Pozice'),
-                                                                  list('width'='10%', 'title'='Organizace'))))
-  output$googlechart <- renderGvis((gvisBarChart(data2,'Organizace','pozic',
+                                                     columns=list(list('width'='75%', 'title'='Pozice'),
+                                                                  list('width'='25%', 'title'='Organizace'))))
+  output$googlechart <- renderGvis((gvisBarChart(data2,'zkratka','pozic',
                                                  options=gcoptions)))
 })
