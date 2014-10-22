@@ -10,12 +10,12 @@ url_data <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4
 url_date <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4jPyicp%2B2mx&query=select%20max(datetime)%20as%20date%20from%20data'
 url_allorgs <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4jPyicp%2B2mx&query=select%20count(distinct(dept))%20as%20alldeptcount%20from%20%27data%27'
 tmpFile <- tempfile()
-tmpFile <- getURL(url_data)
+tmpFile <- getURL(url_data,.opts = list(ssl.verifypeer = FALSE))
 data <- fromJSON(tmpFile)
 tmpFile2 <- tempfile()
-tmpFile2 <- getURL(url_date)
+tmpFile2 <- getURL(url_date,.opts = list(ssl.verifypeer = FALSE))
 tmpFile3 <- tempfile()
-tmpFile3 <- getURL(url_allorgs)
+tmpFile3 <- getURL(url_allorgs,.opts = list(ssl.verifypeer = FALSE))
 date <- fromJSON(tmpFile2)
 alldeptcount <- fromJSON(tmpFile3)[1,1]
 datum <- strptime(date$date, '%Y-%m-%d')
