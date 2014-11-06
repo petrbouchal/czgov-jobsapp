@@ -1,9 +1,12 @@
+require(rCharts)
+options(RCHART_LIB = 'uvcharts')
 shinyUI(fluidPage(theme='custom.css',
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")),
   fluidRow(
     textOutput('counttext'),
-    htmlOutput('googlechart'),
+#     htmlOutput('googlechart'),
+    showOutput('rchart','uvcharts'),
     dataTableOutput('data'),
     tags$style(type="text/css", '#data tfoot {display: table-header-group;}'),
     tags$br(),

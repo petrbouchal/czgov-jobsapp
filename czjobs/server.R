@@ -1,10 +1,11 @@
 ## Query: select '<a href=''' || joburl || ''' target=''_blank''>' || jobtitle || '</a>' as Pozice, dept as Ministerstvo from 'data' where datetime = (select max(datetime) from data) order by Ministerstvo
 ## Date query: select max(datetime) as date from data
 
+library(rCharts)
 library(RCurl)
 library(jsonlite)
 library(dplyr)
-library(googleVis)
+# library(googleVis)
 
 url_data <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4jPyicp%2B2mx&query=select%20%27%3Ca%20href%3D%27%27%27%20%7C%7C%20joburl%20%7C%7C%20%27%27%27%20target%3D%27%27_blank%27%27%3E%27%20%7C%7C%20jobtitle%20%7C%7C%20%27%3C%2Fa%3E%27%20as%20Pozice%2C%20dept%20as%20Organizace%20from%20%27data%27%20where%20datetime%20%3D%20(select%20max(datetime)%20from%20data)%20order%20by%20Organizace%20'
 url_date <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4jPyicp%2B2mx&query=select%20max(datetime)%20as%20date%20from%20data'
@@ -61,6 +62,19 @@ shinyServer(function(input, output) {
                                                      searching=T,
                                                      columns=list(list('width'='75%', 'title'='Pozice'),
                                                                   list('width'='25%', 'title'='Organizace'))))
-  output$googlechart <- renderGvis((gvisBarChart(data2,'zkratka','pozic',
-                                                 options=gcoptions)))
+#   output$googlechart <- renderGvis((gvisBarChart(data2,'zkratka','pozic',
+#                                                  options=gcoptions)))
+  output$rchart <- renderChart2({
+    rch <- uPlot('zkratka','pozic', data=data2, type='StackedBar')
+    rch$params$width <- 800
+    rch$params$height <- 400
+    rch$params$margin <- 0
+    rch$config(dimension = list(width=800, height=350))
+    rch$config(margin = list(top=20, bottom=20, left=60, right=20))
+    rch$config(graph = list(custompalette = c('#999999','#000000')))
+    rch$config(bar = list(textcolor = '#ffffff'))
+    rch$config(axis = list(showticks = FALSE, showsubticks=FALSE,
+                           opacity=1, showtext=TRUE))
+    return(rch)
+  })
 })
