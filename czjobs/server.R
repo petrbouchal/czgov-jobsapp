@@ -1,10 +1,11 @@
 ## Query: select '<a href=''' || joburl || ''' target=''_blank''>' || jobtitle || '</a>' as Pozice, dept as Ministerstvo from 'data' where datetime = (select max(datetime) from data) order by Ministerstvo
 ## Date query: select max(datetime) as date from data
 
+library(plyr)
+library(dplyr)
 library(rCharts)
 library(RCurl)
 library(jsonlite)
-library(dplyr)
 # library(googleVis)
 
 url_data <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4jPyicp%2B2mx&query=select%20joburl%2C%20jobtitle%2C%20dept%20as%20Organizace%20from%20%27data%27%20where%20datetime%20%3D%20(select%20max(datetime)%20from%20data)%20order%20by%20Organizace%20'
