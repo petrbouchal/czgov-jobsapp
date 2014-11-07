@@ -26,6 +26,7 @@ jobcount <- length(unique(data$Pozice))
 
 load('./names.dta')
 data <- merge(data,names,all.x=TRUE)
+data$Pozice <- paste0('<a href=\"',data$joburl,'\" target=\"_blank\">',data$jobtitle,'</a>')
 
 gcoptions = list(width = '100%',
                  height = 320,
