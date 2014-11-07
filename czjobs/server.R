@@ -29,18 +29,18 @@ load('./names.dta')
 data <- merge(data,names,all.x=TRUE)
 data$Pozice <- paste0('<a href=\"',data$joburl,'\" target=\"_blank\">',data$jobtitle,'</a>')
 
-gcoptions = list(width = '100%',
-                 height = 320,
-                 bar = '{groupWidth: \"85%\"}',
-                 colors="['red']",
-                 legend = list(position = "none"),
-                 titlePosition = 'none',
-                 chartArea = '{left: 60, top: 25, height: \'85%\'}',
-                 axisTitlesPosition = 'none',
-                 theme = 'maximized',
-                 vAxis = '{textStyle: {color: \'red\', bold: false,
-                           fontFace: \'Source Sans Pro\'},
-                           textPosition: \'out\'}')
+# gcoptions = list(width = '100%',
+#                  height = 320,
+#                  bar = '{groupWidth: \"85%\"}',
+#                  colors="['red']",
+#                  legend = list(position = "none"),
+#                  titlePosition = 'none',
+#                  chartArea = '{left: 60, top: 25, height: \'85%\'}',
+#                  axisTitlesPosition = 'none',
+#                  theme = 'maximized',
+#                  vAxis = '{textStyle: {color: \'red\', bold: false,
+#                            fontFace: \'Source Sans Pro\'},
+#                            textPosition: \'out\'}')
 
 data2 <- data %>% group_by(zkratka) %>% summarise(pozic=n()) %>% arrange(-pozic)
 tabledata <- select(data, Pozice, Organizace=fullnazev)
