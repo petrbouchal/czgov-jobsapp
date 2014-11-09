@@ -26,9 +26,8 @@ hh$plotOptions(bar = list(stacking = "normal"))
 hh$xAxis(tickLength=0,type='category')
 hh$yAxis(tickLength=0,title=NA)
 hh$legend(enabled=FALSE)
-hh$chart(width='100%')
 hh$params$width='100%'
-hh$params$height=400
+hh$params$height=800
 hh
 
 
