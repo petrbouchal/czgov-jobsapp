@@ -53,16 +53,14 @@ shinyServer(function(input, output) {
                                                                   list('width'='25%', 'title'='Organizace'))))
 
   output$rchart <- renderChart2({
-    rch <- uPlot('zkratka','pozic', data=data2, type='StackedBar')
-    rch$params$width <- 800
+    rch <- hPlot(x='zkratka',y='pozic', data=data2, type='StackedBar')
+    rch$params$width <- '100%'
     rch$params$height <- 400
     rch$params$margin <- 0
-    rch$config(dimension = list(width=800, height=350))
-    rch$config(margin = list(top=20, bottom=20, left=60, right=20))
-    rch$config(graph = list(custompalette = c('#999999','#000000')))
-    rch$config(bar = list(textcolor = '#ffffff'))
-    rch$config(axis = list(showticks = FALSE, showsubticks=FALSE,
-                           opacity=1, showtext=TRUE))
+    rch$plotOptions(bar = list(stacking = "normal"))
+    rch$xAxis(tickLength=0,type='category')
+    rch$yAxis(tickLength=0,title=NA)
+    rch$legend(enabled=FALSE)
     return(rch)
   })
 })
