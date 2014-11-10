@@ -22,7 +22,7 @@ cocaine2 <- cocaine %>%
   arrange(price)
 
 hh <- hPlot(data=cocaine2, y='price',x='state', type='bar', group='month', stacking='normal')
-hh$plotOptions(bar = list(stacking = "normal"))
+hh$plotOptions(bar = list(stacking = "normal",borderColor=NA))
 hh$xAxis(tickLength=0,type='category')
 hh$yAxis(tickLength=0,title=NA)
 hh$legend(enabled=FALSE)

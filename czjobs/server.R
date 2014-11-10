@@ -23,7 +23,7 @@ alldeptcount <- fromJSON(tmpFile3)[1,1]
 datum <- strptime(date$date, '%Y-%m-%d')
 datum <- strftime(date$date, '%d.%m.%Y')
 deptcount <- length(unique(data$Organizace))
-jobcount <- length(unique(data$Pozice))
+jobcount <- length(unique(data$jobtitle))
 
 load('./names.dta')
 data <- merge(data,names,all.x=TRUE)
@@ -53,12 +53,15 @@ shinyServer(function(input, output) {
                                                                   list('width'='25%', 'title'='Organizace'))))
 
   output$rchart <- renderChart2({
-    rch <- hPlot(x='zkratka',y='pozic', data=data2, type='StackedBar')
+    # This is a workaround to keep the ordering
+    # as per https://github.com/ramnathv/rCharts/issues/212
+#     rch <- hPlot(x='zkratka',y='pozic', data=data2, type='bar')
+    rch <- Highcharts$new()
     rch$params$width <- '100%'
     rch$params$height <- 400
-    rch$params$margin <- 0
-    rch$plotOptions(bar = list(stacking = "normal"))
-    rch$xAxis(tickLength=0,type='category')
+    rch$series(data = data2$pozic, type = "bar", pointWidth=400/deptcount-4,name='Nabídek')
+    rch$plotOptions(bar = list(stacking = "normal", borderColor=NA))
+    rch$xAxis(tickLength=0,type='category', categories=data2$zkratka)
     rch$yAxis(tickLength=0,title=NA)
     rch$legend(enabled=FALSE)
     return(rch)
