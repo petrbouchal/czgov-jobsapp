@@ -28,10 +28,15 @@ jobcount <- length(unique(data$joburl))
 
 load('./names.dta')
 data <- merge(data,names,all.x=TRUE)
-data$Pozice <- paste0('<a href=\"',data$joburl,' target=\"_blank\">',data$jobtitle,'</a>')
+data$Pozice <- paste0('<a href=\"',data$joburl,'\" target=\"_blank\">',data$jobtitle,'</a>')
 
-data2 <- data %>% group_by(zkratka) %>% summarise(pozic=n()) %>% arrange(-pozic)
-tabledata <- select(data, Pozice, Organizace=fullnazev, seenfor) %>% arrange(seenfor)
+data2 <- data %>% group_by(zkratka, seenfor) %>%
+  summarise(pozic=n()) %>%
+  group_by(zkratka) %>% mutate(total=sum(pozic)) %>% ungroup()
+#   arrange(zkratka,-total)
+#   arrange(-pozic)
+
+tabledata <- select(data, Pozice, Organizace=fullnazev, Stáří=seenfor) %>% arrange(Stáří)
 
 shinyServer(function(input, output) {
   output$counttext <- renderText(paste0(' Nalezeno ',jobcount,' nabídek od ',
@@ -39,6 +44,7 @@ shinyServer(function(input, output) {
                                         ' organizací. Naposledy zkontrolováno ',
                                         datum,'. Sledujeme ', alldeptcount,
                                         ' organizací.'))
+
   output$data <- renderDataTable(tabledata,options = list(lengthChange=F,
                                                      language=list(
                                                        "paginate"=list("next"="další",
@@ -53,19 +59,22 @@ shinyServer(function(input, output) {
                                                      columns=list(list('width'='70%', 'title'='Pozice'),
                                                                   list('width'='20%', 'title'='Organizace'),
                                                                   list('width'='10%', 'title'='Stáří (dny)'))))
-
+#   data2$zkratka <- factor(data2$zkratka , levels = data2[order(data2$total), 1])
+#   data2 <- within(data2, zkratka <- reorder(zkratka, total))
   output$rchart <- renderChart2({
-    rch <- uPlot('zkratka','pozic', data=data2, type='StackedBar')
-#     rch <- uPlot('zkratka','pozic', data=data2, type='StackedBar', group='seenfor')
-    rch$params$width <- 800
+    # Below is a workaround to keep the ordering - without hPlot
+    # as per https://github.com/ramnathv/rCharts/issues/212
+      rch <- hPlot(pozic ~ zkratka, data=data2, type='bar',group='seenfor')
+#     rch <- Highcharts$new()
+#     rch$series(data = data2$pozic, type = "bar", pointWidth=400/deptcount-6,
+#                name='Nabídek', group=data2$seenfor)
+    rch$params$width <- '100%'
     rch$params$height <- 400
-    rch$params$margin <- 0
-    rch$config(dimension = list(width=800, height=350))
-    rch$config(margin = list(top=20, bottom=20, left=60, right=20))
-    rch$config(graph = list(custompalette = c('#999999','#000000')))
-    rch$config(bar = list(textcolor = '#ffffff'))
-    rch$config(axis = list(showticks = FALSE, showsubticks=FALSE,
-                           opacity=1, showtext=TRUE))
+    rch$plotOptions(bar = list(stacking = "normal", borderColor=NA, pointWidth=400/deptcount-6))
+    rch$xAxis(tickLength=0,type='category')
+    rch$yAxis(tickLength=0,title=NA,
+              tickPositions=seq(0,ceiling(max(data2$pozic)/10)*10,10))
+    rch$legend(enabled=FALSE)
     return(rch)
   })
 })
