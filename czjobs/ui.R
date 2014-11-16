@@ -2,7 +2,8 @@ require(rCharts)
 options(RCHART_LIB = 'Highcharts')
 shinyUI(fluidPage(theme='custom.css',
   tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")),
+#     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
+    includeScript('analytics-code.js')),
   fluidRow(
     textOutput('counttext'),
 #     htmlOutput('googlechart'),
