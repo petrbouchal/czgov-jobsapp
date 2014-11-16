@@ -23,7 +23,6 @@ alldeptcount <- fromJSON(tmpFile3)[1,1]
 datum <- strptime(date$date, '%Y-%m-%d')
 datum <- strftime(date$date, '%d.%m.%Y')
 deptcount <- length(unique(data$Organizace))
-jobcount <- length(unique(data$Pozice))
 
 load('./names.dta')
 data <- merge(data,names,all.x=TRUE)
@@ -44,6 +43,7 @@ data$Pozice <- paste0('<a href=\"',data$joburl,'\" target=\"_blank\">',data$jobt
 
 data2 <- data %>% group_by(zkratka) %>% summarise(pozic=n()) %>% arrange(-pozic)
 tabledata <- select(data, Pozice, Organizace=fullnazev)
+jobcount <- nrow(data)
 
 shinyServer(function(input, output) {
   output$counttext <- renderText(paste0(' Nalezeno ',jobcount,' nabídek od ',
