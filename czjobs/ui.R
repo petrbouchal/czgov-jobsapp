@@ -1,8 +1,8 @@
 require(rCharts)
-options(RCHART_LIB = 'uvcharts')
+# options(RCHART_LIB = 'uvcharts')
 shinyUI(fluidPage(theme='custom.css',
-  tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")),
+#   tags$head(
+#     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")),
   fluidRow(
     textOutput('counttext'),
 #     htmlOutput('googlechart'),
