@@ -4,10 +4,9 @@
 
 library(plyr)
 library(dplyr)
-library(rCharts)
+library(ggvis)
 library(RCurl)
 library(jsonlite)
-# library(googleVis)
 
 url_data <- 'https://api.morph.io/petrbouchal/czgov-jobs-test/data.json?key=N4S7F3oGM4jPyicp%2B2mx&query=select%20joburl%2Cjobtitle%2C%20dept%20as%20Organizace%2C%20seenfor%2C%20live%2C%20latest%20from%20%27data%27%20where%20live%20%3D%201%20order%20by%20seenfor'
 url_date <- 'https://api.morph.io/petrbouchal/czgov-jobs-test/data.json?key=N4S7F3oGM4jPyicp%2B2mx&query=select%20max(lastseen)%20as%20date%20from%20data'
@@ -29,12 +28,6 @@ jobcount <- length(unique(data$joburl))
 load('./names.dta')
 data <- merge(data,names,all.x=TRUE)
 data$Pozice <- paste0('<a href=\"',data$joburl,'\" target=\"_blank\">',data$jobtitle,'</a>')
-
-data2 <- data %>% group_by(zkratka, seenfor) %>%
-  summarise(pozic=n()) %>%
-  group_by(zkratka) %>% mutate(total=sum(pozic)) %>% ungroup()
-#   arrange(zkratka,-total)
-#   arrange(-pozic)
 
 tabledata <- select(data, Pozice, Organizace=fullnazev, Stáří=seenfor) %>% arrange(Stáří)
 
@@ -59,22 +52,57 @@ shinyServer(function(input, output) {
                                                      columns=list(list('width'='70%', 'title'='Pozice'),
                                                                   list('width'='20%', 'title'='Organizace'),
                                                                   list('width'='10%', 'title'='Stáří (dny)'))))
-#   data2$zkratka <- factor(data2$zkratka , levels = data2[order(data2$total), 1])
-#   data2 <- within(data2, zkratka <- reorder(zkratka, total))
-  output$rchart <- renderChart2({
-    # Below is a workaround to keep the ordering - without hPlot
-    # as per https://github.com/ramnathv/rCharts/issues/212
-      rch <- hPlot(pozic ~ zkratka, data=data2, type='bar',group='seenfor')
-#     rch <- Highcharts$new()
-#     rch$series(data = data2$pozic, type = "bar", pointWidth=400/deptcount-6,
-#                name='Nabídek', group=data2$seenfor)
-    rch$params$width <- '100%'
-    rch$params$height <- 400
-    rch$plotOptions(bar = list(stacking = "normal", borderColor=NA, pointWidth=400/deptcount-6))
-    rch$xAxis(tickLength=0,type='category')
-    rch$yAxis(tickLength=0,title=NA,
-              tickPositions=seq(0,ceiling(max(data2$pozic)/10)*10,10))
-    rch$legend(enabled=FALSE)
-    return(rch)
-  })
+  tooltip <- function(data) {
+    paste0("<div>Úřad: ", data$zkratka,
+           "<br />Nabídky vyvěšené před ", data$seenfor," dny",
+           "<br />", data$stack_upr_ - data$stack_lwr_," nabídek</div>")
+  }
+
+#   Blue = colorRampPalette(c(rgb(0,136/255,204/255),"lightgrey"))
+  Blue = colorRampPalette(c("blue","lightgrey"))
+
+  data %>%
+    mutate(zkratka = as.character(zkratka)) %>%
+    group_by(zkratka, seenfor) %>%
+    summarise(pozic=n()) %>%
+    group_by(zkratka) %>% mutate(total=sum(pozic)) %>%
+    arrange(-seenfor) %>%
+    ungroup() %>%
+    arrange(-total) %>%
+    group_by(zkratka) %>%
+    ggvis(x = ~pozic, x2 = 0, y = ~zkratka, height = band(), stroke:=NA, fill=~seenfor) %>%
+    compute_stack(stack_var=~pozic, group_var = ~zkratka) %>%
+    layer_rects(x = ~stack_upr_, x2 = ~stack_lwr_) %>%
+    add_tooltip(tooltip) %>%
+    scale_numeric("x", expand = 0) %>%
+#     scale_numeric('fill', range=Blue(length(unique(data2$seenfor)))) %>%
+    hide_legend('fill') %>%
+    scale_nominal('y',sort = FALSE) %>%
+    add_axis('x',
+             properties = axis_props(
+               ticks = list(stroke = NA),
+               majorTicks = list(strokeWidth = 0),
+               grid = list(stroke = 'lightgrey'),
+               labels = list(
+                 fill = "lightgrey",
+                 fontSize = 10,
+                 align = "middle",
+                 baseline = "middle"
+               ),
+               axis = list(stroke = NA, strokeWidth = 0)
+             )) %>%
+    add_axis('y',title = "",
+             properties = axis_props(
+               ticks = list(stroke = NA),
+               majorTicks = list(strokeWidth = 0),
+               grid = list(stroke = NA),
+               labels = list(
+                 fill = "#08c",
+                 fontSize = 12,
+                 align = "right",
+                 baseline = "right"
+               ),
+               axis = list(stroke = NA, strokeWidth = 0))) %>%
+    set_options(resizable=F) %>%
+    bind_shiny('graf')
 })
