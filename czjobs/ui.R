@@ -2,7 +2,7 @@ require(ggvis)
 shinyUI(fluidPage(theme='custom.css',
   tags$head(
 #     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
-    includeScript('analytics-code.js')),
+    includeScript('analytics-code-test.js')),
   fluidRow(
     textOutput('counttext'),
 #     htmlOutput('googlechart'),
