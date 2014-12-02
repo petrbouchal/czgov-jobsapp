@@ -7,7 +7,7 @@ shinyUI(fluidPage(theme='custom.css',
   fluidRow(
     textOutput('counttext'),
 #     htmlOutput('googlechart'),
-    showOutput('rchart','Highcharts'),
+    showOutput('rchart','highcharts'),
     dataTableOutput('data'),
     tags$style(type="text/css", '#data tfoot {display: table-header-group;}'),
     tags$br(),
