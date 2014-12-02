@@ -62,7 +62,8 @@ shinyServer(function(input, output) {
     rch$series(data = data2$pozic, type = "bar", pointWidth=400/deptcount-6,name='Nabídek')
     rch$plotOptions(bar = list(stacking = "normal", borderColor=NA))
     rch$xAxis(tickLength=0,type='category', categories=data2$zkratka)
-    rch$yAxis(tickLength=0,title=NA)
+    rch$yAxis(tickLength=0,title=NA,
+              tickPositions=seq(0,ceiling(max(data2$pozic)/10)*10,10))
     rch$legend(enabled=FALSE)
     return(rch)
   })
