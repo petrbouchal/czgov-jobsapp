@@ -1,6 +1,8 @@
 require(rCharts)
 # options(RCHART_LIB = 'uvcharts')
 shinyUI(fluidPage(theme='custom.css',
+    tags$head(
+      includeScript('./analytics-code-test.js')),
 #   tags$head(
 #     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")),
   fluidRow(
