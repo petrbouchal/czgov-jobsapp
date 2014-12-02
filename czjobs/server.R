@@ -23,6 +23,7 @@ alldeptcount <- fromJSON(tmpFile3)[1,1]
 datum <- strptime(date$date, '%Y-%m-%d')
 datum <- strftime(date$date, '%d.%m.%Y')
 deptcount <- length(unique(data$Organizace))
+jobcount <- length(unique(data$joburl))
 
 load('./names.dta')
 data <- merge(data,names,all.x=TRUE)
