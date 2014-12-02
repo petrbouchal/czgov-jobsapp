@@ -23,7 +23,7 @@ alldeptcount <- fromJSON(tmpFile3)[1,1]
 datum <- strptime(date$date, '%Y-%m-%d')
 datum <- strftime(date$date, '%d.%m.%Y')
 deptcount <- length(unique(data$Organizace))
-jobcount <- length(unique(data$jobtitle))
+jobcount <- length(unique(data$joburl))
 
 load('./names.dta')
 data <- merge(data,names,all.x=TRUE)
@@ -59,7 +59,7 @@ shinyServer(function(input, output) {
     rch <- Highcharts$new()
     rch$params$width <- '100%'
     rch$params$height <- 400
-    rch$series(data = data2$pozic, type = "bar", pointWidth=400/deptcount-4,name='Nabídek')
+    rch$series(data = data2$pozic, type = "bar", pointWidth=400/deptcount-6,name='Nabídek')
     rch$plotOptions(bar = list(stacking = "normal", borderColor=NA))
     rch$xAxis(tickLength=0,type='category', categories=data2$zkratka)
     rch$yAxis(tickLength=0,title=NA)
