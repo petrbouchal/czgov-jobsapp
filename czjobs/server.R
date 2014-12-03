@@ -52,26 +52,6 @@ shinyServer(function(input, output) {
                                                      searching=T,
                                                      columns=list(list('width'='75%', 'title'='Pozice'),
                                                                   list('width'='25%', 'title'='Organizace'))))
-<<<<<<< HEAD
-#   output$googlechart <- renderGvis((gvisBarChart(data2,'zkratka','pozic',
-#                                                  options=gcoptions)))
-output$rchart <- renderChart2({
-  # This is a workaround to keep the ordering
-  # as per https://github.com/ramnathv/rCharts/issues/212
-  #     rch <- hPlot(x='zkratka',y='pozic', data=data2, type='bar')
-  rch <- Highcharts$new()
-  rch$params$width <- '100%'
-  rch$params$height <- 400
-  rch$series(data = data2$pozic, type = "bar", pointWidth=400/deptcount-6,name='Nabídek')
-  rch$plotOptions(bar = list(stacking = "normal", borderColor=NA))
-  rch$xAxis(tickLength=0,type='category', categories=data2$zkratka)
-  rch$yAxis(tickLength=0,title=NA,
-            tickPositions=seq(0,ceiling(max(data2$pozic)/10)*10,10))
-  rch$legend(enabled=FALSE)
-  return(rch)
-})
-=======
-
   output$rchart <- renderChart2({
     # This is a workaround to keep the ordering
     # as per https://github.com/ramnathv/rCharts/issues/212
@@ -87,5 +67,4 @@ output$rchart <- renderChart2({
     rch$legend(enabled=FALSE)
     return(rch)
   })
->>>>>>> newchart
 })
