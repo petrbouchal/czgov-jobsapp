@@ -29,19 +29,6 @@ load('./names.dta')
 data <- merge(data,names,all.x=TRUE)
 data$Pozice <- paste0('<a href=\"',data$joburl,'\" target=\"_blank\">',data$jobtitle,'</a>')
 
-# gcoptions = list(width = '100%',
-#                  height = 320,
-#                  bar = '{groupWidth: \"85%\"}',
-#                  colors="['red']",
-#                  legend = list(position = "none"),
-#                  titlePosition = 'none',
-#                  chartArea = '{left: 60, top: 25, height: \'85%\'}',
-#                  axisTitlesPosition = 'none',
-#                  theme = 'maximized',
-#                  vAxis = '{textStyle: {color: \'red\', bold: false,
-#                            fontFace: \'Source Sans Pro\'},
-#                            textPosition: \'out\'}')
-
 data2 <- data %>% group_by(zkratka) %>% summarise(pozic=n()) %>% arrange(-pozic)
 tabledata <- select(data, Pozice, Organizace=fullnazev)
 jobcount <- nrow(data)
@@ -65,6 +52,7 @@ shinyServer(function(input, output) {
                                                      searching=T,
                                                      columns=list(list('width'='75%', 'title'='Pozice'),
                                                                   list('width'='25%', 'title'='Organizace'))))
+<<<<<<< HEAD
 #   output$googlechart <- renderGvis((gvisBarChart(data2,'zkratka','pozic',
 #                                                  options=gcoptions)))
 output$rchart <- renderChart2({
@@ -82,4 +70,22 @@ output$rchart <- renderChart2({
   rch$legend(enabled=FALSE)
   return(rch)
 })
+=======
+
+  output$rchart <- renderChart2({
+    # This is a workaround to keep the ordering
+    # as per https://github.com/ramnathv/rCharts/issues/212
+#     rch <- hPlot(x='zkratka',y='pozic', data=data2, type='bar')
+    rch <- Highcharts$new()
+    rch$params$width <- '100%'
+    rch$params$height <- 400
+    rch$series(data = data2$pozic, type = "bar", pointWidth=400/deptcount-6,name='Nabídek')
+    rch$plotOptions(bar = list(stacking = "normal", borderColor=NA))
+    rch$xAxis(tickLength=0,type='category', categories=data2$zkratka)
+    rch$yAxis(tickLength=0,title=NA,
+              tickPositions=seq(0,ceiling(max(data2$pozic)/10)*10,10))
+    rch$legend(enabled=FALSE)
+    return(rch)
+  })
+>>>>>>> newchart
 })

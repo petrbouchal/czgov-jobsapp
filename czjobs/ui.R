@@ -1,12 +1,14 @@
 require(rCharts)
-options(RCHART_LIB = 'Highcharts')
+# options(RCHART_LIB = 'uvcharts')
 shinyUI(fluidPage(theme='custom.css',
-  tags$head(
-    includeScript('./analytics-code.js')),
+    tags$head(
+      includeScript('./analytics-code.js')),
+#   tags$head(
+#     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")),
   fluidRow(
     textOutput('counttext'),
 #     htmlOutput('googlechart'),
-    showOutput('rchart','Highcharts'),
+    showOutput('rchart','highcharts'),
     dataTableOutput('data'),
     tags$style(type="text/css", '#data tfoot {display: table-header-group;}'),
     tags$br(),
