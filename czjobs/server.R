@@ -103,6 +103,6 @@ shinyServer(function(input, output) {
                  baseline = "right"
                ),
                axis = list(stroke = NA, strokeWidth = 0))) %>%
-    set_options(resizable=F) %>%
+    set_options(height=400, width=800) %>%
     bind_shiny('graf')
 })
