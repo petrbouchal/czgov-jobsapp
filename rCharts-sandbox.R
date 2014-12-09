@@ -48,3 +48,47 @@ dd$legend(
 dd$templates$afterScript = "<script> var yAxis = myChart.axes.filter(function(axis){return axis.position==='y'})[0]; yAxis.gridlineShape.remove() </script>"
 dd
 
+
+# following adapted from https://gist.github.com/reinholdsson/5842467
+require(rCharts)
+
+df <- data.frame(
+  name = c("MPO", "MPO","MPO", "MMR", "MMR","MMR"),
+  count = sample(1:4, 6, replace = T),
+  date = c(sample(1:4,3, replace=FALSE),
+           sample(1:4,3, replace=FALSE))
+)
+
+df$date = paste(df$date, ' days')
+
+require(tidyr)
+gg <- spread(df, key=date, value=count, fill=0)
+df2 <- gather(gg, date, count, -name)
+
+a <- rCharts:::Highcharts$new()
+
+a$chart(type = "bar")
+a$plotOptions(bar = list(stacking = "normal"))
+a$xAxis(categories = levels(df$name))
+
+invisible(sapply(unique(df2$date), function(sername){
+  d <- df2[df2$date == sername, ]
+  a$series(name = sername, data = d$count, stack = d$name[[1]])
+}))
+a
+
+# https://github.com/ramnathv/rCharts/issues/201 :
+
+df <- data.frame(
+  name = c("MPO", "MPO","MPO", "MMR", "MMR","MMR"),
+  count = sample(1:4, 6, replace = T),
+  date = c(sample(1:4,3, replace=FALSE),
+           sample(1:4,3, replace=FALSE))
+)
+df$date = paste(df$date, ' days')
+
+n1 <- nPlot(count ~ date, group = 'name', data = df, type = 'multiBarHorizontal')
+n1$chart(stacked = TRUE, forceY = 10)
+# n1$params$width=400
+n1
+
