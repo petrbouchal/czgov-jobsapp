@@ -10,4 +10,6 @@ Draws on data scraped by [petrbouchal/czgov-jobs](http://github.com/petrbouchal/
 
 Protected by the [MIT License](/LICENSE.md)
 
+Latest release 3 Dec 2014
+
 
