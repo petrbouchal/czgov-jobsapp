@@ -3,8 +3,6 @@ require(rCharts)
 shinyUI(fluidPage(theme='custom.css',
     tags$head(
       includeScript('./analytics-code.js')),
-#   tags$head(
-#     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")),
   fluidRow(
     textOutput('counttext'),
 #     htmlOutput('googlechart'),
