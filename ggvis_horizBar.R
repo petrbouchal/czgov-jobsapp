@@ -1,11 +1,13 @@
-# SOURCE: https://groups.google.com/forum/#!topic/ggvis/st77SgwRWKk = horizontal bar chart workaround
+# SOURCE: https://groups.google.com/forum/#!topic/ggvis/st77SgwRWKk = 
+# for the horizontal bar chart workaround
 # AND http://rpackages.ianhowson.com/cran/ggvis/man/compute_stack.html = stacking
 
 library(dplyr)
 library(ggvis)
 
 tooltip <- function(data) {
-  paste0("<div style=\'font-family:sans-serif;\'>Month: ", data$month, "<br />State: ", data$state,
+  paste0("<div style=\'font-family:sans-serif;\'>Month: ",
+         data$month, "<br />State: ", data$state,
           "<br />Count: ", data$stack_upr_ - data$stack_lwr_,'</div>')
 }
 
