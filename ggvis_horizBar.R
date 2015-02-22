@@ -9,17 +9,19 @@ tooltip <- function(data) {
           "<br />Count: ", data$stack_upr_ - data$stack_lwr_,'</div>')
 }
 
-Blue = colorRampPalette(c("white","black"))
-colourscale=Blue(n = 6)
+Blue = colorRampPalette(c("white","red"))
+colourscale=Blue(n = 12)
 
 cocaine %>%
-  mutate(month = as.factor(month)) %>%
+  mutate(month = as.factor(month),
+         state = as.factor(state)) %>%
   group_by(state, month) %>%
   summarize(count = n()) %>%
   group_by(state) %>%
   mutate(total=sum(count)) %>%
   ungroup() %>%
   arrange(total) %>%
+  mutate(state=reorder(state, total, mean)) %>% 
   group_by(state, month) %>%
   ggvis(x = ~count, x2 = 0, y = ~state, height = band(), fill=~month, stroke:=NA) %>%
   compute_stack(stack_var=~count,group_var = ~state) %>%
