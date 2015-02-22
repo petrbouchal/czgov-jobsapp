@@ -11,7 +11,7 @@ tooltip <- function(data) {
           "<br />Count: ", data$stack_upr_ - data$stack_lwr_,'</div>')
 }
 
-Blue = colorRampPalette(c("white","red"))
+Blue = colorRampPalette(c("grey","red"))
 colourscale=Blue(n = 12)
 
 cocaine %>%
