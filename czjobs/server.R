@@ -13,6 +13,7 @@ url_date <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4
 url_allorgs <- 'https://api.morph.io/petrbouchal/GovJobsCZ/data.json?key=N4S7F3oGM4jPyicp%2B2mx&query=select%20count(distinct(dept))%20as%20alldeptcount%20from%20%27data%27'
 tmpFile <- tempfile()
 tmpFile <- getURL(url_data,.opts = list(ssl.verifypeer = FALSE))
+tmpFile <- gsub('\\s+',' ',tmpFile)
 data <- fromJSON(tmpFile)
 tmpFile2 <- tempfile()
 tmpFile2 <- getURL(url_date,.opts = list(ssl.verifypeer = FALSE))
@@ -39,19 +40,21 @@ shinyServer(function(input, output) {
                                         ' organizací. Naposledy zkontrolováno ',
                                         datum,'. Sledujeme ', alldeptcount,
                                         ' organizací.'))
-  output$data <- renderDataTable(tabledata,options = list(lengthChange=F,
-                                                     language=list(
-                                                       "paginate"=list("next"="další",
-                                                                       "previous"="předchozí"),
-                                                       "infoEmpty"="Nic nenalezeno",
-                                                       "zeroRecords"="Hledání neodpovídá žádná pozice",
-                                                       "info"="Pozice _START_ až _END_ z _TOTAL_",
-                                                       "infoFiltered"=" (celkem _MAX_)"),
-                                                     pageLength=10,
-                                                     dom="<<t>pi>",
-                                                     searching=T,
-                                                     columns=list(list('width'='75%', 'title'='Pozice'),
-                                                                  list('width'='25%', 'title'='Organizace'))))
+  output$data <- renderDataTable(tabledata, escape=FALSE,
+                                 options = list(lengthChange=F,
+                                                language=list(
+                                                  "paginate"=list("next"="další",
+                                                                  "previous"="předchozí"),
+                                                  "infoEmpty"="Nic nenalezeno",
+                                                  "zeroRecords"="Hledání neodpovídá žádná pozice",
+                                                  "info"="Pozice _START_ až _END_ z _TOTAL_",
+                                                  "infoFiltered"=" (celkem _MAX_)"),
+                                                pageLength=10,
+                                                dom="<<t>pi>",
+                                                searching=T,
+                                                columns=list(list("type"="html","width"="75%", "title"="Pozice"),
+                                                             list("width"="25%", "title"="Organizace"))
+                                                ))
   output$rchart <- renderChart2({
     # This is a workaround to keep the ordering
     # as per https://github.com/ramnathv/rCharts/issues/212
