@@ -50,6 +50,7 @@ shinyServer(function(input, output) {
                                                   "info"="Pozice _START_ až _END_ z _TOTAL_",
                                                   "infoFiltered"=" (celkem _MAX_)"),
                                                 pageLength=10,
+                                                pagingType="simple_num",
                                                 dom="<<t>pi>",
                                                 searching=T,
                                                 columns=list(list("type"="html","width"="75%", "title"="Pozice"),
