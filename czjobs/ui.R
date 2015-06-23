@@ -8,7 +8,7 @@ shinyUI(fluidPage(
     textOutput('counttext'),
 #     htmlOutput('googlechart'),
     showOutput('rchart','highcharts'),
-    dataTableOutput('data'),
+    DT::dataTableOutput('data'),
     tags$style(type="text/css", '#data tfoot {display: table-header-group;}'),
     tags$br(),
     tags$span(tags$a(href='http://www.morph.io/petrbouchal/GovJobsCZ','Data'),

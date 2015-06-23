@@ -5,6 +5,7 @@ library(plyr)
 library(dplyr)
 library(rCharts)
 library(RCurl)
+library(httr)
 library(jsonlite)
 # library(googleVis)
 
@@ -40,7 +41,7 @@ shinyServer(function(input, output) {
                                         ' organizací. Naposledy zkontrolováno ',
                                         datum,'. Sledujeme ', alldeptcount,
                                         ' organizací.'))
-  output$data <- renderDataTable(tabledata, escape=FALSE,
+  output$data <- DT::renderDataTable(tabledata, filter='top', rownames=FALSE,
                                  options = list(lengthChange=F,
                                                 language=list(
                                                   "paginate"=list("next"="další",
@@ -50,12 +51,13 @@ shinyServer(function(input, output) {
                                                   "info"="Pozice _START_ až _END_ z _TOTAL_",
                                                   "infoFiltered"=" (celkem _MAX_)"),
                                                 pageLength=10,
-                                                pagingType="simple_num",
+                                                # pagingType="simple_num",
                                                 dom="<<t>pi>",
                                                 searching=T,
                                                 columns=list(list("type"="html","width"="75%", "title"="Pozice"),
                                                              list("width"="25%", "title"="Organizace"))
-                                                ))
+                                                ),
+                                 escape=FALSE)
   output$rchart <- renderChart2({
     # This is a workaround to keep the ordering
     # as per https://github.com/ramnathv/rCharts/issues/212

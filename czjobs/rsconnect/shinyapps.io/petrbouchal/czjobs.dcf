@@ -1,4 +1,5 @@
 name: czjobs
 account: petrbouchal
-bundleId: 136052
+server: shinyapps.io
+bundleId: 138800
 url: http://petrbouchal.shinyapps.io/czjobs
