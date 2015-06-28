@@ -44,6 +44,8 @@ shinyServer(function(input, output) {
                                         ' organizací. Naposledy zkontrolováno ',
                                         datum,'. Sledujeme ', alldeptcount,
                                         ' organizací.'))
+  observeEvent(input$resetchart, {input$plot_click <- NULL
+                                  input$plot_brush <- NULL})
   output$data <- DT::renderDataTable(
     if(!is.null(input$plot_brush)) {
       tabledata[tabledata$zkratka %in% (levels(data2$zkratka)[seq(round(input$plot_brush$ymin),

@@ -18,6 +18,7 @@ shinyUI(fluidPage(
                  brush = brushOpts(
                    id = "plot_brush",
                    direction = "y"))),
+      # actionLink("resetchart","Zobrazit všechny")),
   column(width=8,
     DT::dataTableOutput('data'),
     tags$style(type="text/css", '#data tfoot {display: table-header-group;}'),
