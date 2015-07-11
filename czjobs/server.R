@@ -41,7 +41,7 @@ shinyServer(function(input, output) {
                                         ' organizací. Naposledy zkontrolováno ',
                                         datum,'. Sledujeme ', alldeptcount,
                                         ' organizací.'))
-  output$data <- DT::renderDataTable(tabledata, filter='top', rownames=FALSE,
+  output$data <- DT::renderDataTable(tabledata, filter='top', rownames=FALSE, style="bootstrap",
                                  options = list(lengthChange=F,
                                                 language=list(
                                                   "paginate"=list("next"="další",
